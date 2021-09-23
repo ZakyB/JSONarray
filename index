@@ -1,0 +1,51 @@
+<html>
+
+
+
+<script src ="./jquery-3.6.0.js"></script>
+<script>
+	const prototype = `
+	<table>
+		<thead>
+			<tr>
+			__headers__
+			</tr>
+		<thead>
+    	<tbody>
+    		<tr>
+    			__body__
+    		</tr>
+    	</tbody>
+	</table>
+`
+	$.get('/person.json')
+	.then(function(response){
+		console.log(response);
+	});
+	$.get('/person.json')
+	.then(function(response){
+		let headersTemplate = '';
+		let bodyTemplate = '';
+		let headers = Object.keys(response[0]);
+		headers.forEach(function(header) {
+			headersTemplate += `<th>${header}</th>`
+		});
+
+		let template = prototype.replace(`__headers__`,headersTemplate)
+		$('body').prepend(template);
+
+		$.each(response,function(index,person){
+			bodyTemplate+=
+			`
+			<tr>
+				<td>${person.name}</td>
+				<td>${person.age}</td>
+				<td>${person.cars.join(', ')}</td>
+			</tr>
+			`
+		})
+		template = template.replace('__body__',bodyTemplate);
+		$('body').prepend(template);		
+	})
+</script>
+</html>
